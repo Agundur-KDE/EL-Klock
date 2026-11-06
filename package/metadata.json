@@ -3,19 +3,21 @@
     "KPlugin": {
         "Authors": [
             {
-                "Email": "info@agundur.de",
-                "Name": "Agundur"
+                "Name": "Agundur",
+                "Email": "info@agundur.de"
             }
         ],
-        "BugReportUrl": "https://github.com/Agundur-KDE/KDE-Plasma-Plasmoid-template/issues",
+        "BugReportUrl": "https://github.com/Agundur-KDE/EL-Klock/issues",
         "Category": "Status Information",
-        "Description": "A skeleton to get you started building a Plasmoid",
-        "Icon": "kdesrc-build",
-        "Id": "de.agundur.myplasmoid",
-        "License": "GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL",
-        "Name": "KDE-Template",
-        "Version": "0.1",
-        "Website": "https://github.com/Agundur-KDE/KDE-Plasma-Plasmoid-template"
+        "Description": "Eternal Lands time, special days and invasion alerts",
+        "Icon": "chronometer",
+        "Id": "de.agundur.elklock",
+        "License": "GPL-3.0-only",
+        "Name": "EL-Klock",
+        "Version": "0.1.0",
+        "Website": "https://github.com/Agundur-KDE/EL-Klock",
+        "Name[de]": "EL-Klock",
+        "Description[de]": "Eternal-Lands-Uhr, Special Days und Invasionsalarme"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
 }

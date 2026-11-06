@@ -9,7 +9,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-PROJECT_ID="de.agundur.myplasmoid"
+PROJECT_ID="de.agundur.elklock"
 POT="translate/template.pot"
 
 xgettext \

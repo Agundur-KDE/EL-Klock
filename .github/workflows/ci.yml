@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install audio QML runtime
+        run: zypper --non-interactive install qt6-multimedia-imports
+
       - name: Configure
         run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
 

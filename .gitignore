@@ -1,2 +1,5 @@
 build/
 .kateproject.build
+
+.local/
+dist/

@@ -1,134 +1,66 @@
-<div align="center">
-  <h1>KDE Plasma 6 Plasmoid Template</h1>
+# EL-Klock
 
-  <a href="https://kde.org/">
-    <img src="https://img.shields.io/badge/KDE_Plasma-6.7+-blue?style=flat&logo=kde" alt="KDE Plasma 6">
-  </a>
-  <a href="https://www.gnu.org/licenses/gpl-3.0.html">
-    <img src="https://img.shields.io/badge/License-GPL--2.0%2B-blue.svg" alt="License: GPL-2.0+">
-  </a>
-  <a href="https://paypal.me/agundur">
-    <img src="https://img.shields.io/badge/donate-PayPal-%2337a556" alt="PayPal">
-  </a>
-</div>
+An Eternal Lands clock for KDE Plasma 6, with Special Day notifications and invasion warnings from [Mercator](https://mercator.holy-eternalland.de/api). No account or personal token is required.
 
-## What's included
+- Panel: game time with a status icon; click to open details. Vertical panels show the icon and put the time in the tooltip.
+- Desktop / popup: game date, current day and description, last invasion report and its age.
+- Settings: choose individual Special Days from a searchable checklist, toggle invasion warnings and the optional horn sound, seconds and polling interval (default 30 seconds).
+- English interface with German translation; day names and reports retain their original game text.
 
-A clean, minimal starting point for a **KDE Plasma 6 Plasmoid** — pure QML, no boilerplate:
-
-If this template helps you build a KDE Plasma widget, [support its continued maintenance through GitHub Sponsors](https://github.com/sponsors/Agundur-KDE).
-
-| Feature | Details |
-|---|---|
-| Compact + Full representation | Panel icon expands to full popup |
-| Config dialog | `configGeneral.qml` with KCM.SimpleKCM + `main.xml` for persistent settings |
-| i18n | `translate/` with `.po` files for de, es, fr (English is the source language, needs no `.po`) — `ki18n_install` wired up, `Messages.sh` extracts strings |
-| Qt Quick Test | `tests/tst_plasmoid.qml` — run with `ctest` |
-| Clean CMake | Only what's needed: ECM, KF6 Config/I18n/KCMUtils, Qt6 Quick/Test/QuickTest |
-
-## Video tutorial
-
-[![Build Your First KDE Plasma 6 Widget — From Clone to Desktop](docs/media/plasmoid_howto.png)](https://www.youtube.com/watch?v=DsxmLgVS0FI)
-
-A complete walkthrough from cloning this template to a working Plasma widget.
-
-## Requirements
-
-- Qt ≥ 6.7
-- KDE Frameworks ≥ 6.10
-- CMake ≥ 3.16
-- Extra CMake Modules (ECM)
-
-On openSUSE Tumbleweed:
-```bash
-sudo zypper install cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-kconfig-devel \
-     kf6-kcmutils-devel qt6-quick-devel qt6-test-devel qt6-quicktest-devel
-```
-
-On Arch / KDE neon / Ubuntu with KDE PPA — install the equivalent `*-dev` packages.
-
-**Not on Tumbleweed and just want to build/test without installing all of the
-above?** The CI container has everything preinstalled:
-
-```bash
-docker run --rm -it -v "$PWD":/src -w /src ghcr.io/agundur-kde/plasmoid-ci:latest bash
-```
-
-Only useful for the CMake/`ctest`/`qmllint` build-and-test path — for pure QML
-iteration you don't need this or the packages above, see "Quick iteration" below.
-
-## Build
-
-```bash
-git clone https://github.com/Agundur-KDE/KDE-Plasma-Plasmoid-template.git
-cd KDE-Plasma-Plasmoid-template
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/.local"
-make -j$(nproc)
-make install
-```
-
-(No `sudo` needed — installing to your own `~/.local` is enough for Plasma
-to find the plasmoid. For pure QML iteration you don't need to build/install
-at all, see "Quick iteration" below.)
-
-## Test
-
-```bash
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-make tst_plasmoid
-ctest --output-on-failure
-```
-
-Tests live in `tests/tst_plasmoid.qml`. Add `TestCase { }` blocks there as your plasmoid grows.
-
-## Rename for your project
-
-After cloning, run the interactive rename script once:
-
-```bash
-bash rename.sh
-```
-
-It replaces all occurrences of `de.agundur.myplasmoid` / `myplasmoid` / `KDE-Template`,
-renames the `.po` translation files, and updates `metadata.json` (name, description, author, URLs).
-
-## Translations
-
-After adding or changing an `i18n()`/`i18nc()` call in the QML, run:
-
-```bash
-./Messages.sh
-```
-
-This extracts every translatable string into `translate/template.pot` and merges it
-into each existing `translate/<lang>/*.po` (adds new strings, keeps existing
-translations and each file's header). Translators then fill in the empty `msgstr`
-entries in the `.po` files.
-
-## Quick iteration without installing (for development)
-
-`plasmoidviewer` can load a package straight from its source folder — no
-`kpackagetool6 --install` / `sudo make install` round-trip needed while
-you're just iterating on QML:
+## Preview and install
 
 ```bash
 plasmoidviewer -a package/
 ```
 
-Edits to QML/config files apply on the next restart of `plasmoidviewer`.
-Only install for real (`kpackagetool6 --install package/`, or `make
-install` for the compiled plugin) once you need a real desktop/panel
-placement or system icon-theme resolution.
+For installation without translations:
 
-## Customising
+```bash
+kpackagetool6 --type Plasma/Applet --install package/
+# After changes:
+kpackagetool6 --type Plasma/Applet --upgrade package/
+```
 
-1. **Rename** — find/replace `de.agundur.myplasmoid` and `myplasmoid` in `CMakeLists.txt` and `package/metadata.json`
-2. **UI** — edit `fullRepresentation`/`compactRepresentation` in `package/contents/ui/main.qml` for the popup content. Keep them inline there rather than splitting into separate files — QML ids (like `root`) aren't visible across files, so a separate file can't reach back into `main.qml`'s state.
-3. **Settings** — add entries to `package/contents/config/main.xml` and a matching field in `configGeneral.qml`
-4. **C++ plugin** — optional, disabled by default. Uncomment `add_subdirectory(plugin)` in `package/CMakeLists.txt` if you need a C++-backed QML type; `package/plugin/FileReader.*` is a working example to start from. It's intentionally simple: it opens whatever path its `path` property is set to. Fine for a config-driven path you control — don't wire it up to untrusted/user-supplied input without adding your own validation.
+For installation including translations:
 
-## Contributing
+```bash
+cmake -B build -DCMAKE_INSTALL_PREFIX="$HOME/.local"
+cmake --build build -j2
+cmake --install build
+```
 
-Fork and adapt freely. If you improve something others would benefit from, a pull request is welcome.
+Then add **EL-Klock** via Plasma's widget browser. Build dependencies and CI container are inherited from the [Agundur KDE template](https://github.com/Agundur-KDE/KDE-Plasma-Plasmoid-template): CMake, ECM, Qt 6.7+ Quick/Test/QuickTest and KF6 6.10+ Config/I18n/KCMUtils. Runtime also requires the KDE Notifications QML module and Qt Multimedia QML (`qt6-multimedia-imports` on openSUSE).
+
+## Notifications
+
+No Special Days are selected initially. Open settings, check the days you care about and apply. Day names come from the [EL Wiki](https://el-wiki.holy-eternalland.de/index.php?title=Special_Days); Day of Alchemy was also observed in Mercator's history. Matching ignores capitalization, including `Reconstruction day` versus `Reconstruction Day`. This bundled list does not fetch the wiki at runtime.
+
+Starting the widget establishes a silent baseline, even if a selected day or invasion warning already exists. Subsequent changes trigger notifications; repeated samples remain silent. Invasions can be enabled separately. New GIWS reports qualify only if their timestamp is at most 15 minutes old and not more than a minute in the future. A recent report is not proof that an invasion is still running. The widget always shows the report's age and does not turn “in ~10 minutes” into a countdown.
+
+Desktop popups use KDE's standard Plasma Workspace notification event. Its settings and Do Not Disturb apply; EL-Klock does not force critical-priority notifications. The optional **Play a warning sound** setting plays the bundled horn once per accepted new invasion warning; it is off by default and disabled together with invasion alerts. **Test sound** previews it on demand, independently of that checkbox. The horn uses Qt Multimedia and the normal system audio output, independently of Plasma notification muting / Do Not Disturb; mute it with the EL-Klock sound checkbox or the system audio controls. There is no background service: the widget must be loaded in Plasma to monitor events. Each widget instance monitors separately.
+
+## Data and clock behavior
+
+The source is `https://mercator.holy-eternalland.de/botmanagement/elinfo.json`. The documented `/_elday/clock-data` proxy returned zero-filled data during development and is not used. Zero-filled / malformed responses are rejected.
+
+The game clock uses `Gametimestamp` as its sample reference, advances 60 game seconds per 61 real seconds and has a six-game-hour day (6 hours 6 minutes of real time), following the [EL Wiki timekeeping rules](https://el-wiki.holy-eternalland.de/index.php?title=Time_Keeping). At day rollover it waits for a new sample instead of carrying an old day's name forward. After three minutes without fresh source timestamps the clock shows `--:--`, and alarms are suppressed. Last known information remains visible as outdated. Network requests time out after ten seconds and retry at the configured interval.
+
+Invasions use `GIWS_Text` and the absolute millisecond timestamp `GIWS_date_diff`; the field name is misleading. `GIWS_Monsters` is displayed as the reported count rather than used as the only trigger: advance warnings can have a zero count. API availability, accuracy and polling latency limit how quickly alarms arrive. Manual or other invasions not reported by this feed cannot be detected.
+
+Personal-token endpoints (messages, watchlists, account identity) are outside this first version.
+
+## Development and verification
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j2
+QT_QPA_PLATFORM=offscreen ctest --test-dir build --output-on-failure
+qmllint6 package/contents/ui/*.qml
+./Messages.sh
+```
+
+The Qt Quick tests exercise the actual production parser and alarm rules, including null proxy values, stale and future timestamps, day rollover, selected days, startup, duplicates and old invasion reports. `qmllint` cannot statically resolve Plasma's injected `i18n` context and dynamic KConfig keys; runtime preview is also necessary.
+
+`tools/preview-check.sh` starts a temporary Xvfb display and a source-loaded PlasmoidViewer using temporary isolated configuration. It saves `docs/preview.png` and `docs/config-preview.png`; it does not install the widget or alter the running desktop.
+
+Template findings are collected in [docs/template-improvements.md](docs/template-improvements.md) for a later upstream pass. The template repository is kept as the `template` Git remote. Development repository: `Agundur-KDE/EL-Klock` (private).

@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: plasma_applet_de.agundur.elklock\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-06 14:44+0100\n"
+"PO-Revision-Date: 2026-11-06 13:35+0100\n"
+"Last-Translator: Agundur <info@agundur.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: package/contents/ui/configGeneral.qml:31
+msgid "Show seconds"
+msgstr "Sekunden anzeigen"
+
+#: package/contents/ui/configGeneral.qml:32
+msgid "Clock:"
+msgstr "Uhr:"
+
+#: package/contents/ui/configGeneral.qml:40
+msgid "Refresh interval (seconds):"
+msgstr "Aktualisierung (Sekunden):"
+
+#: package/contents/ui/configGeneral.qml:44
+msgid "Notify about new invasion warnings"
+msgstr "Bei neuen Invasionswarnungen benachrichtigen"
+
+#: package/contents/ui/configGeneral.qml:45
+msgid "Invasions:"
+msgstr "Invasionen:"
+
+#: package/contents/ui/configGeneral.qml:52
+msgid "Play a warning sound"
+msgstr "Warnton bei Invasionen"
+
+#: package/contents/ui/configGeneral.qml:55
+msgid "Test sound"
+msgstr "Warnton testen"
+
+#: package/contents/ui/configGeneral.qml:62
+msgid "Special Day notifications"
+msgstr "Benachrichtigungen für Special Days"
+
+#: package/contents/ui/configGeneral.qml:66
+msgid ""
+"Choose the days you want to hear about. Notifications start with the next "
+"change; opening EL-Klock during an existing day stays silent."
+msgstr ""
+"Wähle die Tage aus, über die du benachrichtigt werden möchtest. Alarme "
+"beginnen beim nächsten Wechsel; beim Start während eines laufenden Tages "
+"bleibt EL-Klock still."
+
+#: package/contents/ui/configGeneral.qml:72
+msgid "Find a Special Day…"
+msgstr "Special Day suchen…"
+
+#: package/contents/ui/configGeneral.qml:78
+msgid "Select all"
+msgstr "Alle auswählen"
+
+#: package/contents/ui/configGeneral.qml:81
+msgid "Clear selection"
+msgstr "Auswahl löschen"
+
+#: package/contents/ui/configGeneral.qml:82
+msgid "%1 selected"
+msgstr "%1 ausgewählt"
+
+#: package/contents/ui/configGeneral.qml:97
+msgid "Special Days in the EL Wiki"
+msgstr "Special Days im EL-Wiki"
+
+#: package/contents/ui/main.qml:36
+msgid "Mercator returned invalid data."
+msgstr "Mercator hat ungültige Daten geliefert."
+
+#: package/contents/ui/main.qml:37
+msgid "Cannot reach Mercator. Retrying automatically."
+msgstr "Mercator ist nicht erreichbar. Neuer Versuch folgt automatisch."
+
+#: package/contents/ui/main.qml:38
+msgid "Data is outdated. Waiting for a fresh update."
+msgstr "Die Daten sind veraltet. Warte auf eine aktuelle Meldung."
+
+#: package/contents/ui/main.qml:39
+msgid "Connecting to Mercator…"
+msgstr "Verbindung mit Mercator wird hergestellt…"
+
+#: package/contents/ui/main.qml:43
+msgid "Time unknown"
+msgstr "Zeitpunkt unbekannt"
+
+#: package/contents/ui/main.qml:45
+msgid "Just now"
+msgstr "Gerade eben"
+
+#: package/contents/ui/main.qml:46
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "vor %1 Minute"
+msgstr[1] "vor %1 Minuten"
+
+#: package/contents/ui/main.qml:47
+msgid "%1 hour ago"
+msgid_plural "%1 hours ago"
+msgstr[0] "vor %1 Stunde"
+msgstr[1] "vor %1 Stunden"
+
+#: package/contents/ui/main.qml:76
+msgid "Invasion warning"
+msgstr "Invasionswarnung"
+
+#: package/contents/ui/main.qml:148
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: package/contents/ui/main.qml:157
+msgid "Configure"
+msgstr "Einrichten"
+
+#: package/contents/ui/main.qml:170
+msgid "Eternal Lands time"
+msgstr "Eternal-Lands-Zeit"
+
+#: package/contents/ui/main.qml:184
+msgid "Day %1 · Month %2 · Year %3"
+msgstr "Tag %1 · Monat %2 · Jahr %3"
+
+#: package/contents/ui/main.qml:236
+msgid "Recent invasion warning"
+msgstr "Aktuelle Invasionswarnung"
+
+#: package/contents/ui/main.qml:236
+msgid "Last invasion report"
+msgstr "Letzte Invasionsmeldung"
+
+#: package/contents/ui/main.qml:243
+msgid "No invasion report available."
+msgstr "Keine Invasionsmeldung verfügbar."
+
+#: package/contents/ui/main.qml:256
+msgid "%1 monster reported"
+msgid_plural "%1 monsters reported"
+msgstr[0] "%1 Monster gemeldet"
+msgstr[1] "%1 Monster gemeldet"
+
+#: package/contents/ui/main.qml:266
+msgid "Source: Mercator"
+msgstr "Quelle: Mercator"
+
+#: package/contents/ui/main.qml:271
+msgid "Open Mercator"
+msgstr "Mercator öffnen"
+
+#: package/contents/config/config.qml:13
+msgctxt "@title"
+msgid "General"
+msgstr "Allgemein"

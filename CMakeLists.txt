@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(myplasmoid)
+project(elklock)
 
 set(QT_MIN_VERSION "6.7.0")
 set(KF6_MIN_VERSION "6.10.0")
@@ -49,7 +49,7 @@ add_subdirectory(tests)
 # as inert data files next to the actually-used compiled plugin, which
 # ecm_add_qml_module already installs separately into the Qt QML plugin dir.
 install(FILES package/metadata.json
-        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/plasmoids/de.agundur.myplasmoid)
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/plasmoids/de.agundur.elklock)
 
 install(DIRECTORY package/contents/
-        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/plasmoids/de.agundur.myplasmoid/contents)
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/plasmoids/de.agundur.elklock/contents)

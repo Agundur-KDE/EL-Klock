@@ -24,7 +24,7 @@ Baseline: f064644 (2026-11-06). Collect here; implement and test upstream later.
 
 - The inline-representations rule is too absolute. Separate QML files work if state and signals are passed explicitly through properties. Explain this option instead of implying every representation must remain inline.
 - Mention that pure QML `kpackagetool6` installation does not install `ki18n_install` catalogs, whereas CMake installation does. Otherwise language testing from the source folder can be misleading.
-- Offer a pure-QML release builder: compile gettext catalogs into `contents/locale` for a standalone `.plasmoid`, share the payload with architecture-independent RPM/DEB packages, validate tag against metadata, and test archive contents. Document that user widget copies shadow system package updates.
+- Offer a pure-QML release builder: compile gettext catalogs into `contents/locale` for a standalone `.plasmoid`, build DEBs locally and obtain signed RPMs from OBS. Pin OBS submissions to the release source and verify RPM version, signature and `DISTURL` source checksum before attaching it. Document that user widget copies shadow system package updates.
 - Add a small Qt Quick test that imports production logic. The example counter test duplicates state in its test fixture and stays green if the real counter breaks.
 - Mention headless preview's D-Bus requirements separately from pure Qt Quick tests; offscreen alone is not sufficient in a restricted environment.
 

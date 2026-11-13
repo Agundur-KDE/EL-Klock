@@ -4,3 +4,5 @@ build/
 .local/
 dist/
 __pycache__/
+obs-rpms/
+release-source/

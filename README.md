@@ -16,8 +16,13 @@ Download an installable file from [Releases](https://github.com/Agundur-KDE/EL-K
 kpackagetool6 --type Plasma/Applet --install elklock-0.1.0.plasmoid
 # For subsequent .plasmoid updates use --upgrade instead of --install.
 
-# openSUSE Tumbleweed: system installation, dependencies resolved by zypper
-sudo zypper install ./elklock-0.1.0-1.noarch.rpm
+# openSUSE Tumbleweed: signed OBS packages and updates through Zypper
+# Skip the first command if home:Agundur is already configured.
+sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:/Agundur/openSUSE_Tumbleweed/home:Agundur.repo
+sudo zypper refresh
+sudo zypper install elklock
+# Or install the OBS RPM downloaded from the GitHub release:
+# sudo zypper install ./elklock-0.1.0-*.noarch.rpm
 
 # Debian 13 (Trixie) with Plasma 6: dependencies resolved by apt
 sudo apt install ./elklock_0.1.0-1_all.deb
@@ -87,32 +92,40 @@ The Qt Quick tests exercise the actual production parser and alarm rules, includ
 
 ## Release packages
 
-EL-Klock is pure QML. `tools/build-release.py` creates all three packages from
-the same widget files, compiles gettext catalogs, includes license/provenance
-notices and the invasion sound, and writes `dist/SHA256SUMS`. C++ example
-sources and build files are excluded. RPMs target openSUSE Tumbleweed (`noarch`);
-DEBs target Debian 13 (`all`). Runtime Qt/KDE modules are package dependencies;
-the `.plasmoid` requires those modules to be installed separately.
+EL-Klock is pure QML. GitHub builds the `.plasmoid` and Debian 13 `.deb` (`all`)
+using `tools/build-release.py`. RPMs are built and signed exclusively by
+[home:Agundur/elklock on OBS](https://build.opensuse.org/package/show/home:Agundur/elklock)
+for openSUSE Tumbleweed (`noarch`), then downloaded into the GitHub release.
+All packages compile gettext catalogs and include the invasion sound and
+license/provenance notices. Unused C++ examples and build files are excluded.
+Runtime Qt/KDE modules are package dependencies; the `.plasmoid` requires
+those modules to be installed separately.
 
 Build and test using the same packaging tools as GitHub Actions:
 
 ```bash
 docker build -f packaging/Dockerfile -t elklock-packaging .
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/src" elklock-packaging \
-  python3 -m unittest discover -s tests -p test_release.py
+  python3 -m unittest discover -s tests -p 'test_*.py'
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/src" elklock-packaging
 ```
 
-Alternatively, install Python 3, gettext (`msgfmt`), RPM build tools and
+Alternatively, install Python 3, gettext (`msgfmt`) and
 `dpkg-deb` locally, then run `python3 tools/build-release.py`.
 
 The **Build release packages** workflow validates package contents on relevant
-pull requests. A manual run builds downloadable Actions artifacts without
-publishing a release. Pushing a tag such as `v0.1.0` builds all three formats
-and attaches them and their checksums to a GitHub Release. The tag must match
-`KPlugin.Version` in `package/metadata.json`; a mismatch stops the build.
-Only the release job receives repository write permission. No OBS repository,
-credentials or native compiler are needed for these download packages.
+pull requests. A manual run without `release_tag` only builds test artifacts.
+Pushing a tag such as `v0.1.0` (or a manual run with that existing `release_tag`)
+submits the tag's exact source archive and the native spec to OBS. The `obs`
+job requires repository secrets `OBS_USER` and `OBS_PASSWORD` and the existing
+OBS package `home:Agundur/elklock`. The spec compiles catalogs on OBS itself.
+Both i586 and x86_64 builds must be published for the submitted source checksum.
+The downloaded noarch RPM must match the version, OBS vendor and source checksum
+and carry an RPM signature. Dirty, failed, timed-out or stale builds stop publication.
+The final job attaches the OBS RPM, `.plasmoid`, `.deb` and common `SHA256SUMS`
+to the release. When repairing a release, obsolete RPM assets are removed only
+after the replacement has uploaded successfully. Tags must match widget metadata;
+only the final release job receives GitHub repository write permission.
 
 CI builds this repository's Dockerfile and runs `bash tools/ci-check.sh` inside
 it, including the QML runtime modules needed by the configuration tests.

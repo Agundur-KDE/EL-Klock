@@ -6,47 +6,118 @@ on:
   pull_request:
     paths:
       - '.github/workflows/release.yml'
-      - 'tools/build-release.py'
+      - 'tools/*release.py'
       - 'packaging/**'
-      - 'tests/test_release.py'
+      - 'tests/test_*.py'
       - 'package/**'
       - 'translate/**'
       - 'LICENSE*'
       - 'NOTICE.md'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing tag to publish or repair (empty = test artifacts only)'
+        type: string
+        required: false
 
 permissions:
   contents: read
 
+concurrency:
+  group: elklock-release
+  cancel-in-progress: false
+
 jobs:
   packages:
     runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.source.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select exact release source
+        id: source
+        env:
+          INPUT_TAG: ${{ inputs.release_tag }}
+        run: |
+          tag="$INPUT_TAG"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then tag="$GITHUB_REF_NAME"; fi
+          if [[ -n "$tag" && ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'Invalid release tag' >&2; exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          ref="${tag:-HEAD}"
+          mkdir release-source
+          git archive "$ref" | tar -x -C release-source
       - name: Install packaging tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gettext rpm dpkg-dev file
-      - name: Verify package contents and version guard
-        run: python3 -m unittest discover -s tests -p test_release.py
-      - name: Build release files
+          sudo apt-get install -y --no-install-recommends gettext dpkg-dev
+      - name: Test packaging and stale-build guards
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Build plasmoid and DEB
         env:
-          RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+          RELEASE_TAG: ${{ steps.source.outputs.tag }}
         run: |
           args=()
           if [[ -n "$RELEASE_TAG" ]]; then args+=(--tag "$RELEASE_TAG"); fi
-          python3 tools/build-release.py "${args[@]}"
-          cd dist
-          sha256sum --check SHA256SUMS
+          python3 tools/build-release.py --source release-source "${args[@]}"
       - uses: actions/upload-artifact@v4
         with:
           name: elklock-packages
-          path: dist/*
+          path: |
+            dist/*.plasmoid
+            dist/*.deb
+          if-no-files-found: error
+
+  obs:
+    needs: packages
+    if: needs.packages.outputs.tag != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install OBS tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends osc rpm
+      - name: Configure OBS authentication
+        env:
+          OBS_USER: ${{ secrets.OBS_USER }}
+          OBS_PASSWORD: ${{ secrets.OBS_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import configparser, os
+          from pathlib import Path
+          if not os.environ['OBS_USER'] or not os.environ['OBS_PASSWORD']:
+              raise SystemExit('OBS_USER and OBS_PASSWORD secrets are required')
+          config = configparser.ConfigParser(interpolation=None)
+          config['general'] = {'apiurl': 'https://api.opensuse.org'}
+          config['https://api.opensuse.org'] = {
+              'user': os.environ['OBS_USER'], 'pass': os.environ['OBS_PASSWORD'],
+              'credentials_mgr_class': 'osc.credentials.PlaintextConfigFileCredentialsManager'}
+          path = Path.home() / '.config/osc/oscrc'
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.touch(mode=0o600)
+          with path.open('w') as output:
+              config.write(output)
+          PY
+      - name: Submit source and download signed OBS RPM
+        env:
+          RELEASE_TAG: ${{ needs.packages.outputs.tag }}
+        run: python3 tools/obs-release.py --tag "$RELEASE_TAG" --output obs-rpms
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elklock-obs-rpm
+          path: obs-rpms/*.noarch.rpm
           if-no-files-found: error
 
   release:
-    needs: packages
-    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
+    needs: [packages, obs]
+    if: needs.packages.outputs.tag != ''
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -55,12 +126,26 @@ jobs:
         with:
           name: elklock-packages
           path: dist
-      - name: Create release and attach packages
+      - uses: actions/download-artifact@v4
+        with:
+          name: elklock-obs-rpm
+          path: dist
+      - name: Publish packages and common checksums
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.packages.outputs.tag }}
         run: |
+          cd dist
+          sha256sum -- *.plasmoid *.deb *.rpm > SHA256SUMS
+          sha256sum --check SHA256SUMS
           gh release view "$RELEASE_TAG" >/dev/null 2>&1 \
             || gh release create "$RELEASE_TAG" --verify-tag --title "EL-Klock $RELEASE_TAG" --generate-notes
-          gh release upload "$RELEASE_TAG" dist/* --clobber
+          gh release upload "$RELEASE_TAG" ./* --clobber
+          # Remove obsolete RPM filenames only after the OBS replacement exists.
+          gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' > /tmp/elklock-assets
+          while IFS= read -r asset; do
+            if [[ "$asset" == *.rpm && ! -f "$asset" ]]; then
+              gh release delete-asset "$RELEASE_TAG" "$asset" --yes
+            fi
+          done < /tmp/elklock-assets

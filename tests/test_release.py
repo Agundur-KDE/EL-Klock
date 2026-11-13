@@ -24,10 +24,9 @@ class ReleaseTests(unittest.TestCase):
             subprocess.run(["python3", str(ROOT / "tools/build-release.py"),
                             "--output", directory, "--tag", f"v{version}"], check=True)
             plasmoid = output / f"elklock-{version}.plasmoid"
-            rpm = output / f"elklock-{version}-1.noarch.rpm"
             deb = output / f"elklock_{version}-1_all.deb"
             self.assertEqual({p.name for p in output.iterdir()},
-                             {plasmoid.name, rpm.name, deb.name, "SHA256SUMS"})
+                             {plasmoid.name, deb.name, "SHA256SUMS"})
             with zipfile.ZipFile(plasmoid) as archive:
                 names = set(archive.namelist())
                 self.assertIn("metadata.json", names)
@@ -38,11 +37,6 @@ class ReleaseTests(unittest.TestCase):
                 catalog = archive.read(f"contents/locale/de/LC_MESSAGES/{DOMAIN}")
                 self.assertEqual(gettext.GNUTranslations(io.BytesIO(catalog)).gettext("Show seconds"),
                                  "Sekunden anzeigen")
-            rpm_files = subprocess.check_output(["rpm", "-qpl", str(rpm)], text=True)
-            self.assertIn(f"/usr/share/plasma/plasmoids/{PLUGIN}/metadata.json", rpm_files)
-            self.assertIn(f"/usr/share/locale/de/LC_MESSAGES/{DOMAIN}", rpm_files)
-            self.assertEqual(subprocess.check_output(["rpm", "-qp", "--qf", "%{VERSION} %{ARCH}",
-                                                     str(rpm)], text=True), f"{version} noarch")
             self.assertEqual(subprocess.check_output(["dpkg-deb", "-f", str(deb), "Architecture"],
                                                      text=True).strip(), "all")
             extracted = output / "extracted"

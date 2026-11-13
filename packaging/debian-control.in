@@ -1,0 +1,11 @@
+Package: elklock
+Version: @VERSION@-1
+Section: kde
+Priority: optional
+Architecture: all
+Maintainer: Agundur <info@agundur.de>
+Homepage: https://github.com/Agundur-KDE/EL-Klock
+Depends: plasma-workspace (>= 4:6.0), qml6-module-qtquick, qml6-module-qtquick-controls, qml6-module-qtquick-layouts, qml6-module-qtmultimedia, qml6-module-org-kde-kirigami, qml6-module-org-kde-kcmutils, qml6-module-org-kde-notifications
+Description: Eternal Lands clock and alerts for KDE Plasma 6
+ Shows game time, selected Special Day notifications and recent invasion
+ warnings from Mercator. No account or personal token is required.

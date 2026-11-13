@@ -9,6 +9,28 @@ An Eternal Lands clock for KDE Plasma 6, with Special Day notifications and inva
 
 ## Preview and install
 
+Download an installable file from [Releases](https://github.com/Agundur-KDE/EL-Klock/releases):
+
+```bash
+# Plasma 6: install per user, including the bundled translations
+kpackagetool6 --type Plasma/Applet --install elklock-0.1.0.plasmoid
+# For subsequent .plasmoid updates use --upgrade instead of --install.
+
+# openSUSE Tumbleweed: system installation, dependencies resolved by zypper
+sudo zypper install ./elklock-0.1.0-1.noarch.rpm
+
+# Debian 13 (Trixie) with Plasma 6: dependencies resolved by apt
+sudo apt install ./elklock_0.1.0-1_all.deb
+```
+
+Choose one installation method. A per-user widget under
+`~/.local/share/plasma/plasmoids/de.agundur.elklock` takes precedence over
+an RPM/DEB installation; remove that copy with
+`kpackagetool6 --type Plasma/Applet --remove de.agundur.elklock` before switching
+to a system package. After an update, log out and back in to reload the widget.
+
+To preview from source:
+
 ```bash
 plasmoidviewer -a package/
 ```
@@ -63,4 +85,38 @@ The Qt Quick tests exercise the actual production parser and alarm rules, includ
 
 `tools/preview-check.sh` starts a temporary Xvfb display and a source-loaded PlasmoidViewer using temporary isolated configuration. It saves `docs/preview.png` and `docs/config-preview.png`; it does not install the widget or alter the running desktop.
 
-Template findings are collected in [docs/template-improvements.md](docs/template-improvements.md) for a later upstream pass. The template repository is kept as the `template` Git remote. Development repository: `Agundur-KDE/EL-Klock` (private).
+## Release packages
+
+EL-Klock is pure QML. `tools/build-release.py` creates all three packages from
+the same widget files, compiles gettext catalogs, includes license/provenance
+notices and the invasion sound, and writes `dist/SHA256SUMS`. C++ example
+sources and build files are excluded. RPMs target openSUSE Tumbleweed (`noarch`);
+DEBs target Debian 13 (`all`). Runtime Qt/KDE modules are package dependencies;
+the `.plasmoid` requires those modules to be installed separately.
+
+Build and test using the same packaging tools as GitHub Actions:
+
+```bash
+docker build -f packaging/Dockerfile -t elklock-packaging .
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/src" elklock-packaging \
+  python3 -m unittest discover -s tests -p test_release.py
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/src" elklock-packaging
+```
+
+Alternatively, install Python 3, gettext (`msgfmt`), RPM build tools and
+`dpkg-deb` locally, then run `python3 tools/build-release.py`.
+
+The **Build release packages** workflow validates package contents on relevant
+pull requests. A manual run builds downloadable Actions artifacts without
+publishing a release. Pushing a tag such as `v0.1.0` builds all three formats
+and attaches them and their checksums to a GitHub Release. The tag must match
+`KPlugin.Version` in `package/metadata.json`; a mismatch stops the build.
+Only the release job receives repository write permission. No OBS repository,
+credentials or native compiler are needed for these download packages.
+
+CI builds this repository's Dockerfile and runs `bash tools/ci-check.sh` inside
+it, including the QML runtime modules needed by the configuration tests.
+The optional image publishing workflow uses the dedicated
+`ghcr.io/agundur-kde/el-klock-ci` package; test runs do not depend on that publish.
+
+Template findings are collected in [docs/template-improvements.md](docs/template-improvements.md) for a later upstream pass. The template repository is kept as the `template` Git remote. Development repository: [Agundur-KDE/EL-Klock](https://github.com/Agundur-KDE/EL-Klock) (public).

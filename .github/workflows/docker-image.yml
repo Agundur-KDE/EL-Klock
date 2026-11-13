@@ -24,4 +24,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/agundur-kde/plasmoid-ci:latest
+          tags: ghcr.io/agundur-kde/el-klock-ci:latest
+          labels: org.opencontainers.image.source=https://github.com/Agundur-KDE/EL-Klock

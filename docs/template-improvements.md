@@ -15,8 +15,16 @@ Baseline: f064644 (2026-11-06). Collect here; implement and test upstream later.
 
 ## Documentation suggestions
 
+- CI images need runtime QML modules as well as C++ development packages.
+  EL-Klock's configuration tests failed on GitHub because Kirigami and
+  KCMUtils QML imports were missing, although compilation passed. A derived
+  repository must also use its own registry image name: pushing the template's
+  shared `plasmoid-ci` package failed with `permission_denied: write_package`.
+  EL-Klock now tests its own Dockerfile directly and publishes a separate image.
+
 - The inline-representations rule is too absolute. Separate QML files work if state and signals are passed explicitly through properties. Explain this option instead of implying every representation must remain inline.
 - Mention that pure QML `kpackagetool6` installation does not install `ki18n_install` catalogs, whereas CMake installation does. Otherwise language testing from the source folder can be misleading.
+- Offer a pure-QML release builder: compile gettext catalogs into `contents/locale` for a standalone `.plasmoid`, share the payload with architecture-independent RPM/DEB packages, validate tag against metadata, and test archive contents. Document that user widget copies shadow system package updates.
 - Add a small Qt Quick test that imports production logic. The example counter test duplicates state in its test fixture and stays green if the real counter breaks.
 - Mention headless preview's D-Bus requirements separately from pure Qt Quick tests; offscreen alone is not sufficient in a restricted environment.
 

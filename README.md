@@ -1,13 +1,25 @@
 # EL-Klock
 
-An Eternal Lands clock for KDE Plasma 6, with Special Day notifications and invasion warnings from [Mercator](https://mercator.holy-eternalland.de/api). No account or personal token is required.
+An [Eternal Lands](https://www.eternal-lands.com/) clock for KDE Plasma 6, with Special Day notifications and invasion warnings from [Mercator](https://mercator.holy-eternalland.de/api). No account or personal token is required.
+
+Eternal Lands is a free-to-play 3D fantasy MMORPG with exploration, harvesting,
+crafting, magic and combat. Characters have no fixed classes, so you can develop
+the skills you enjoy. EL-Klock brings its game time, Special Days and latest
+invasion reports to your KDE desktop.
 
 - Panel: game time with a status icon; click to open details. Vertical panels show the icon and put the time in the tooltip.
 - Desktop / popup: game date, current day and description, last invasion report and its age.
 - Settings: choose individual Special Days from a searchable checklist, toggle invasion warnings and the optional horn sound, seconds and polling interval (default 30 seconds).
 - English interface with German translation; day names and reports retain their original game text.
 
-## Preview and install
+## Preview
+
+<img src="docs/elklock-screenshot.png" alt="EL-Klock popup showing Eternal Lands time, the Day of Robin Tell bonus and the latest invasion report." width="382" height="447">
+
+The popup shows game time and date, the current Special Day bonus, and the
+latest invasion report with its age and a link to Mercator.
+
+## Install
 
 Download an installable file from [Releases](https://github.com/Agundur-KDE/EL-Klock/releases):
 

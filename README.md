@@ -16,16 +16,28 @@ Download an installable file from [Releases](https://github.com/Agundur-KDE/EL-K
 kpackagetool6 --type Plasma/Applet --install elklock-0.1.0.plasmoid
 # For subsequent .plasmoid updates use --upgrade instead of --install.
 
-# openSUSE Tumbleweed: signed OBS packages and updates through Zypper
-# Skip the first command if home:Agundur is already configured.
-sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:/Agundur/openSUSE_Tumbleweed/home:Agundur.repo
-sudo zypper refresh
-sudo zypper install elklock
-# Or install the OBS RPM downloaded from the GitHub release:
-# sudo zypper install ./elklock-0.1.0-*.noarch.rpm
-
 # Debian 13 (Trixie) with Plasma 6: dependencies resolved by apt
 sudo apt install ./elklock_0.1.0-1_all.deb
+```
+
+Signed OBS packages and updates through Zypper:
+
+Choose the repository for your installed distribution. Add it only once; the same repository provides the other Agundur packages too.
+
+**openSUSE Tumbleweed:**
+
+```bash
+sudo zypper ar -f https://download.opensuse.org/repositories/home:/Agundur/openSUSE_Tumbleweed/home:Agundur.repo
+sudo zypper --gpg-auto-import-keys ref
+sudo zypper in elklock
+```
+
+**openSUSE Leap 16.0:**
+
+```bash
+sudo zypper ar -f https://download.opensuse.org/repositories/home:/Agundur/16.0/home:Agundur.repo
+sudo zypper --gpg-auto-import-keys ref
+sudo zypper in elklock
 ```
 
 Choose one installation method. A per-user widget under
@@ -96,6 +108,7 @@ EL-Klock is pure QML. GitHub builds the `.plasmoid` and Debian 13 `.deb` (`all`)
 using `tools/build-release.py`. RPMs are built and signed exclusively by
 [home:Agundur/elklock on OBS](https://build.opensuse.org/package/show/home:Agundur/elklock)
 for openSUSE Tumbleweed (`noarch`), then downloaded into the GitHub release.
+RPMs for openSUSE Leap 16.0 are also available directly from the OBS repository above.
 All packages compile gettext catalogs and include the invasion sound and
 license/provenance notices. Unused C++ examples and build files are excluded.
 Runtime Qt/KDE modules are package dependencies; the `.plasmoid` requires

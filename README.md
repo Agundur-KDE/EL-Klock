@@ -32,10 +32,26 @@ sudo zypper --gpg-auto-import-keys ref
 sudo zypper in elklock
 ```
 
+**openSUSE Leap 16.1:**
+
+```bash
+sudo zypper ar -f https://download.opensuse.org/repositories/home:/Agundur/16.1/home:Agundur.repo
+sudo zypper --gpg-auto-import-keys ref
+sudo zypper in elklock
+```
+
 **openSUSE Leap 16.0:**
 
 ```bash
 sudo zypper ar -f https://download.opensuse.org/repositories/home:/Agundur/16.0/home:Agundur.repo
+sudo zypper --gpg-auto-import-keys ref
+sudo zypper in elklock
+```
+
+**openSUSE Slowroll (x86_64):**
+
+```bash
+sudo zypper ar -f https://download.opensuse.org/repositories/home:/Agundur/openSUSE_Slowroll/home:Agundur.repo
 sudo zypper --gpg-auto-import-keys ref
 sudo zypper in elklock
 ```
@@ -108,7 +124,7 @@ EL-Klock is pure QML. GitHub builds the `.plasmoid` and Debian 13 `.deb` (`all`)
 using `tools/build-release.py`. RPMs are built and signed exclusively by
 [home:Agundur/elklock on OBS](https://build.opensuse.org/package/show/home:Agundur/elklock)
 for openSUSE Tumbleweed (`noarch`), then downloaded into the GitHub release.
-RPMs for openSUSE Leap 16.0 are also available directly from the OBS repository above.
+RPMs for openSUSE Leap 16.0, Leap 16.1 and Slowroll (x86_64) are also available directly from the OBS repositories above.
 All packages compile gettext catalogs and include the invasion sound and
 license/provenance notices. Unused C++ examples and build files are excluded.
 Runtime Qt/KDE modules are package dependencies; the `.plasmoid` requires

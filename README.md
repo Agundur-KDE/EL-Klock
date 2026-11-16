@@ -2,6 +2,10 @@
 
 An [Eternal Lands](https://www.eternal-lands.com/) clock for KDE Plasma 6, with Special Day notifications and invasion warnings from [Mercator](https://mercator.holy-eternalland.de/api). No account or personal token is required.
 
+<a href="https://eternal-lands.agundur.de/_resources/pictures/el.mp4"><img src="docs/el-video-poster.jpg" alt="Watch the Eternal Lands video" width="288" height="512"></a>
+
+[Watch the Eternal Lands video (28 seconds)](https://eternal-lands.agundur.de/_resources/pictures/el.mp4)
+
 Eternal Lands is a free-to-play 3D fantasy MMORPG with exploration, harvesting,
 crafting, magic and combat. Characters have no fixed classes, so you can develop
 the skills you enjoy. EL-Klock brings its game time, Special Days and latest
